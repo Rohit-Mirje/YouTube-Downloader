@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AuraStream - YouTube Media Downloader</title>
+  <meta name="description" content="High performance YouTube Video and Audio Downloader web application.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="background-glow glow-1"></div>
+  <div class="background-glow glow-2"></div>
+
+  <div class="app-layout">
+    <!-- Header -->
+    <header class="app-header">
+      <div class="logo">
+        <div class="logo-badge">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <polygon points="5 3 19 12 5 21 5 3"></polygon>
+          </svg>
+        </div>
+        <div class="logo-text">
+          <h1>AuraStream</h1>
+          <span>YouTube Media Downloader</span>
+        </div>
+      </div>
+
+      <!-- Backend Connection Pill -->
+      <button class="backend-pill" id="btn-backend-settings" title="Configure Backend API URL">
+        <span class="status-dot disconnected" id="backend-status-dot"></span>
+        <span class="backend-label" id="backend-status-text">Backend: Connecting...</span>
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"></path>
+          <circle cx="12" cy="12" r="3"></circle>
+        </svg>
+      </button>
+    </header>
+
+    <main class="main-card">
+      <!-- URL Input Section -->
+      <section class="card-section">
+        <label for="url-input" class="section-label">Video / Playlist URL</label>
+        <div class="input-wrapper">
+          <svg class="search-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path>
+            <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path>
+          </svg>
+          <input 
+            type="url" 
+            id="url-input" 
+            placeholder="Paste YouTube link (e.g. https://www.youtube.com/watch?v=...)" 
+            autocomplete="off"
+            spellcheck="false"
+          >
+          <button class="btn-paste" id="btn-paste">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <rect x="8" y="2" width="8" height="4" rx="1" ry="1"></rect>
+              <path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"></path>
+            </svg>
+            Paste
+          </button>
+          <button class="btn-fetch" id="btn-fetch">Fetch</button>
+        </div>
+
+        <div class="checkbox-row">
+          <label class="custom-checkbox">
+            <input type="checkbox" id="single-video-cb" checked>
+            <span class="checkmark"></span>
+            Single video only (strips playlist & mix parameters)
+          </label>
+          <span class="url-hint" id="url-hint"></span>
+        </div>
+      </section>
+
+      <!-- Preview Card -->
+      <section class="card-section preview-container" id="preview-container">
+        <div class="preview-card" id="preview-card">
+          <div class="thumbnail-wrapper" id="thumb-wrapper">
+            <img id="video-thumbnail" src="" alt="Thumbnail" style="display: none;">
+            <div class="thumbnail-placeholder" id="thumb-placeholder">
+              <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                <rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect>
+                <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path>
+                <line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line>
+              </svg>
+              <span>Paste a link to preview</span>
+            </div>
+          </div>
+
+          <div class="video-info">
+            <h2 class="video-title" id="video-title">No video loaded</h2>
+            <div class="video-meta">
+              <span class="meta-item" id="video-channel">Channel: —</span>
+              <span class="meta-bullet">•</span>
+              <span class="meta-item" id="video-duration">Duration: —</span>
+              <span class="meta-bullet">•</span>
+              <span class="meta-item" id="video-views">Views: —</span>
+            </div>
+            <div class="video-status-tag" id="status-tag">Ready</div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Format & Quality Options -->
+      <section class="card-section options-grid">
+        <div class="option-col">
+          <label class="section-label">Media Type</label>
+          <div class="segmented-control">
+            <button class="seg-btn active" id="btn-mode-video" data-mode="video">🎥 Video (MP4)</button>
+            <button class="seg-btn" id="btn-mode-audio" data-mode="audio">🎵 Audio (MP3)</button>
+          </div>
+        </div>
+
+        <div class="option-col">
+          <label class="section-label" id="quality-label">Resolution</label>
+          <div class="select-wrapper">
+            <select id="quality-select">
+              <option value="best">Best Available (Up to 4K / 1080p)</option>
+              <option value="1080">1080p (Full HD)</option>
+              <option value="720">720p (HD)</option>
+              <option value="480">480p (Standard)</option>
+              <option value="360">360p (Data Saver)</option>
+            </select>
+          </div>
+        </div>
+      </section>
+
+      <!-- Action & Progress Section -->
+      <section class="card-section action-section">
+        <button class="btn-download" id="btn-download">
+          <span class="btn-icon">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+              <polyline points="7 10 12 15 17 10"></polyline>
+              <line x1="12" y1="15" x2="12" y2="3"></line>
+            </svg>
+          </span>
+          <span class="btn-text" id="btn-download-text">Start Download</span>
+        </button>
+
+        <div class="progress-container" id="progress-container" style="display: none;">
+          <div class="progress-bar-bg">
+            <div class="progress-bar-fill" id="progress-bar-fill"></div>
+          </div>
+          <div class="progress-labels">
+            <span class="progress-status" id="progress-status">Downloading...</span>
+            <span class="progress-detail" id="progress-detail">Please wait</span>
+          </div>
+        </div>
+
+        <div class="result-box" id="result-box" style="display: none;">
+          <div class="result-success">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#22c55e" stroke-width="2.5">
+              <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+              <polyline points="22 4 12 14.01 9 11.01"></polyline>
+            </svg>
+            <div>
+              <strong>Download complete!</strong>
+              <p id="result-filename">Your file has been saved.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="app-footer">
+      <p>Hosted via GitHub Pages • Powered by yt-dlp & FFmpeg</p>
+    </footer>
+  </div>
+
+  <!-- Backend Settings Modal -->
+  <div class="modal-overlay" id="backend-modal" style="display: none;">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3>Backend Server Settings</h3>
+        <button class="btn-close-modal" id="btn-close-modal">&times;</button>
+      </div>
+      <div class="modal-body">
+        <p class="modal-desc">
+          Because GitHub Pages is a static host, stream processing is handled by your free backend API (running on Render, Railway, Hugging Face Spaces, or your local machine).
+        </p>
+        
+        <label for="backend-url-input" class="modal-field-label">Backend API URL:</label>
+        <input 
+          type="text" 
+          id="backend-url-input" 
+          placeholder="http://localhost:5000 or https://your-app.onrender.com"
+          class="modal-input"
+        >
+
+        <div class="preset-links">
+          <span>Presets:</span>
+          <button type="button" class="preset-btn" id="preset-local">Local PC (localhost:5000)</button>
+        </div>
+
+        <div class="backend-test-status" id="backend-test-status"></div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn-test" id="btn-test-backend">Test Connection</button>
+        <button class="btn-save" id="btn-save-backend">Save & Connect</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>

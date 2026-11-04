@@ -1,0 +1,5 @@
+flask>=3.0.0
+flask-cors>=4.0.0
+yt-dlp>=2026.10.26
+gunicorn>=21.0.0
+requests>=2.30.0
